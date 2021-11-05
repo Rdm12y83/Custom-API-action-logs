@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Custom API action (logs)
+Plugin Name: Logs
 Plugin URI: http://yourls.org
-Description: Define custom API action 'logs'
+Description: Define custom API action 'logs' and custom logs page
 Version: 0.1
 Author: rdm12y83
 Author URI: github.com/rdm12y83
@@ -24,37 +24,6 @@ function my_logs_function() {
 	);
 }
 
-//table
-
-function array2Html($array, $table = true)
-{
-    $out = '';
-    foreach ($array as $key => $value) {
-        if (is_array($value)) {
-            if (!isset($tableHeader)) {
-                $tableHeader =
-                    '<th>' .
-                    implode('</th><th>', array_keys($value)) .
-                    '</th>';
-            }
-            array_keys($value);
-            $out .= '<tr>';
-            $out .= array2Html($value, false);
-            $out .= '</tr>';
-        } else {
-            $out .= "<td>$value</td>";
-        }
-    }
-
-    if ($table) {
-        return '<table>' . $tableHeader . $out . '</table>';
-    } else {
-        return $out;
-    }
-}
-
-
-
 // Create link for page on Admin page
 yourls_add_action ('plugins_loaded', 'logs');
 function logs() {
@@ -69,6 +38,7 @@ function logs_display_page(){
 	$results = yourls_get_db()->fetchObjects( 
 	    "SELECT * FROM `$table` WHERE 1=1 ${where['sql']};", $where['binds'] );
 	
+		//table head
 	echo" <table><tr><th>Shorturl</th><th>Click time</th><th>Click \n id</th><th>IP</th><th>Country \n code</th><th>User Agent</th>";
 	foreach ($results as $result) {
 		
@@ -87,22 +57,8 @@ function logs_display_page(){
 		echo '<td>'; print_r($ip); echo '</td>';
 		echo '<td>'; echo "   ";print_r($countrycode); echo '</td>';
 		echo '<td>'; print_r(substr($useragent, 0, 82));echo'...'; echo '</td>'; 
-
 		echo '</tr>';
-		/*
-		echo '<h5>Shorturl</h5>'; print_r($shorturl); 
-		echo '<h5>Click id</h5>'; print_r($clickid); 
-		echo '<h5>Click time</h5>'; print_r($clicktime); 
-		echo '<h5>IP</h5>'; print_r($ip);
-		echo '<h5>User agent</h5>'; print_r($useragent); 
-		echo '<h5>Country code</h5>'; print_r($countrycode); 
-		echo '<h5>Referrer</h5>'; print_r($referrer); 
-		echo '<pre>_______________________________________';
-		*/
-		
 	    }
-	    
-	    
         echo '</table>';
 
 }
